@@ -25,11 +25,11 @@
 
 ## 3. Exit status:
 
-    ```c
-    int main(void) {
-        return 42;
-    } // exit status = 42
-    ```
+```c
+int main(void) {
+    return 42;
+} // exit status = 42
+```
 
 
 * exit status-ът на една програма е числото, върнато от функцията main
