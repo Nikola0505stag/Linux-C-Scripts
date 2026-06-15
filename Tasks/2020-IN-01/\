@@ -1,0 +1,64 @@
+#include <unistd.h> // read(), write(), lseek(), close(), ...
+#include <fcntl.h> // O_WRONLY, ...
+#include <stdlib.h> // malloc(), free(), ...
+#include <stdint.h> // uint32_t, uint8_t, ...
+#include <string.h> // strcmp(), ...
+#include <err.h> // err(), errx(), ...
+
+struct header {
+	uint32_t magic;
+	uint8_t header_version;
+	uint8_t data_version;
+	uint16_t count;
+	uint32_t reserved_1;
+	uint32_t reserved_2;
+} __attribute__((packed));
+
+struct version_0 {
+	uint16_t offset;
+	uint8_t original_byte;
+	uint8_t new_byte;
+} __attribute__((packed));
+
+struct version_1 {
+	uint32_t offset;
+	uint16_t original_byte;
+	uint16_t new_byte;
+} __attribute__((packed));
+
+int main(int argc, char* argv[]) {
+
+	if (argc != 4) {
+		err(1, "Expected 3 arguments!");
+	}
+
+	int fd1 = open(argv[2], O_RDONLY);
+	if (fd1 < 0) {
+		err(2, "Error occurred while opening the second file for reading!");
+	}
+
+	int fd2 = open(argv[3], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (fd2 < 0) {
+		err(3, "Error occurred while opening the third file for writing!");
+	}
+
+	int fd_patch = open(argv[1], O_RDONLY);
+	if (fd_patch < 0) {
+		err(4, "Error occurred while opening the patch file for reading!");
+	}
+	
+	struct header head;
+	if (read(fd_patch, &head, sizeof(head)) < 0) {
+		err(5, "Error occurred while reading the header of the patch file!");
+	}
+
+	if (head.data_version == 0x00) {
+		
+	} else if (head.header_version == 0x01) {
+
+	} else {
+		// TODO: some error for wrong version
+	}
+
+	return 0;
+}
